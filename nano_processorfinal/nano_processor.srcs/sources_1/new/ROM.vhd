@@ -42,14 +42,14 @@ architecture Behavioral of ROM is
 type rom_type is array (0 to 7) of std_logic_vector(11 downto 0);
 signal rom : rom_type :=(
     "101110000001", --0     MOVI R7,1
-  "100010000010", --1   024]=-     MOVI R1,2
-  "001110010000", --2     ADD R7 <- R7 + R1
-  "100100000011", --3     MOVI R2,3
-  "001110100000", --4     ADD R7 <- R7 + R2
-  "110000000000", --5     JZR R0,0
-  "000000000000", --6
-  "000000000000"  --7   
-);
+    "100010000010", --1     MOVI R1,2
+    "100100000011", --2     MOVI R2,3
+    "001110010000", --3     ADD R7 <- R7 + R1
+    "001110100000", --4     ADD R7 <- R7 + R2
+    "110000000000", --5     JZR R0,0
+    "000000000000", --6
+    "000000000000"  --7   
+  );
 begin
     data <= rom(to_integer(unsigned(address)));
 end Behavioral;

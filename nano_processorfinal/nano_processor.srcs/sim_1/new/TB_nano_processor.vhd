@@ -39,31 +39,46 @@ architecture Behavioral of TB_nano_processor is
 COMPONENT nano_processor is
     Port ( pushButton : in STD_LOGIC;
            Clk : in STD_LOGIC;
+           Imm_Value:out std_logic_vector(3 downto 0);
            LED : out STD_LOGIC_VECTOR (3 downto 0);
+           LED_R6 : out std_logic_vector(3 downto 0);
+           LED_R5 : out std_logic_vector(3 downto 0);
+           nextInsVal : out std_logic_vector(2 downto 0);
            LED_OVERFLOW:out STD_LOGIC;
+           RegisterEnable:out std_logic_vector(2 downto 0);
+           RegisterBank_DataIn: out std_logic_vector(3 downto 0);
            LED_ZERO:out STD_LOGIC;
-           an:out STD_LOGIC_VECTOR (3 downto 0);
-           seven_seg_out : out STD_LOGIC_VECTOR (6 downto 0)
-           );
-end COMPONENT;
-SIGNAL PUSHBUTTON,LED_ZERO:STD_LOGIC:='0';
-SIGNAL LED_OVERFLOW:STD_LOGIC:='0';
-SIGNAL LED:STD_LOGIC_VECTOR(3 DOWNTO 0);
-SIGNAL seven_seg_out_0:STD_LOGIC_VECTOR(6 DOWNTO 0);
-SIGNAL an:STD_LOGIC_VECTOR(3 DOWNTO 0);
 
+           Instruction_temp : out std_logic_vector(11 downto 0));
+end COMPONENT;
+SIGNAL PUSHBUTTON,LED_OVERFLOW,LED_ZERO:STD_LOGIC;
+SIGNAL LED:STD_LOGIC_VECTOR(3 DOWNTO 0);
+
+signal LED_R6 ,ImmValue: std_logic_vector(3 downto 0);
+signal LED_R5 : std_logic_vector(3 downto 0);
 SIGNAL CLK: STD_LOGIC:='1';
+signal nextInsVal : std_logic_vector(2 downto 0);
+SIGNAL Register_Enable :std_logic_vector(2 downto 0);
+Signal Register_Bank_Data_In:std_logic_vector(3 downto 0);
+signal Instruction_temp : std_logic_vector(11 downto 0);
 
 
 begin
  UUT:nano_processor Port Map(
     pushButton=>PUSHBUTTON,
     Clk=>CLK,
+    RegisterEnable=>Register_Enable,
+    RegisterBank_DataIn=>Register_Bank_Data_In,
     LED=>LED,
+    LED_R6 => LED_R6,
+    LED_R5 => LED_R5,
+    nextInsVal => nextInsVal,
     LED_OVERFLOW=>LED_OVERFLOW,
+    Imm_Value=>ImmValue,
     LED_ZERO=>LED_ZERO,
-    an=>an,
-    seven_seg_out=>seven_seg_out_0
+  
+    
+    Instruction_temp => Instruction_temp
  );
  PROCESS BEGIN
     WAIT FOR 30 NS;

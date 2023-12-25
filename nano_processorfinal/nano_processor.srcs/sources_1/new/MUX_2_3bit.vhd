@@ -43,10 +43,10 @@ architecture Behavioral of MUX_2_3bit is
 begin
 process (S,A,B)
 begin 
- if S ='1' then 
-    Q <= A;
+ if S ='0' then 
+    Q <= B;
  else 
-    Q<= B ;
+    Q<= A ;
  end if;
  end process;
 end Behavioral;

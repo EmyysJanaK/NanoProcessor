@@ -34,12 +34,19 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity nano_processor is
     Port ( pushButton : in STD_LOGIC;
+           Imm_Value:out std_logic_vector(3 downto 0);
            Clk : in STD_LOGIC;
+           nextInsVal : out std_logic_vector(2 downto 0);
+           RegisterEnable:out std_logic_vector(2 downto 0);
+           RegisterBank_DataIn: out std_logic_vector(3 downto 0);
            LED : out STD_LOGIC_VECTOR (3 downto 0);
+           LED_R6 : out std_logic_vector(3 downto 0);
+           LED_R5 : out std_logic_vector(3 downto 0);
            LED_OVERFLOW:out STD_LOGIC;
            LED_ZERO:out STD_LOGIC;
-           an:out STD_LOGIC_VECTOR (3 downto 0);
-           seven_seg_out : out STD_LOGIC_VECTOR (6 downto 0)     
+           Instruction_temp : out std_logic_vector(11 downto 0)
+           
+           
            );
 end nano_processor;
 
@@ -146,10 +153,6 @@ COMPONENT Adder_Subtractor_4bit IS
            ZERO: out STD_LOGIC );
 end COMPONENT;
 
-COMPONENT LUT_16_7 is
-    Port ( address : in STD_LOGIC_VECTOR (3 downto 0);
-           data : out STD_LOGIC_VECTOR (6 downto 0));
-end COMPONENT;
 
 SIGNAL clk_temp:STD_LOGIC;
 SIGNAL clk_temp2:STD_LOGIC;
@@ -162,13 +165,11 @@ SIGNAL THREE_BIT_ADDER_OUT:STD_LOGIC_VECTOR(2 DOWNTO 0);
 SIGNAL C_OUTT:STD_LOGIC;
 
 --Adder_Subtractor
-SIGNAL M,C_OUT:STD_LOGIC;
-SIGNAL OVERFLOW:STD_LOGIC:='0';
-SIGNAL ZERO:STD_LOGIC:='0';
+SIGNAL M,OVERFLOW,ZERO,C_OUT:STD_LOGIC;
 
 --Register Bank
 SIGNAL R0,R1,R2,R3,R4,R5,R6,R7,Reg_Bank_In:STD_LOGIC_VECTOR(3 DOWNTO 0);
-signal pushButton_temp : std_logic:='1';
+signal pushButton_temp : std_logic;
 
 --instruction decoder
 SIGNAL Reg_1,Reg_2,Reg_EN:STD_LOGIC_VECTOR(2 DOWNTO 0);
@@ -187,17 +188,13 @@ SIGNAL memory_select:STD_LOGIC_VECTOR(2 DOWNTO 0);
 -----MUX 8 4 bit
 SIGNAL MUX_8_OUT0,MUX_8_OUT1:STD_LOGIC_VECTOR(3 DOWNTO 0);
 
---- LUT
-SIGNAL LUT_DATA:STD_LOGIC_VECTOR(3 DOWNTO 0);
-SIGNAL LUT_ADDRESS:STD_LOGIC_VECTOR(6 DOWNTO 0);
-
 begin
 
 Program_Counter:ProgramCounter
     Port map(
     Reset=>pushButton_temp,
---    Clk=>clk_temp,
-    Clk=>clk_temp2,
+    Clk=>clk_temp,
+--    Clk=>clk_temp2,
     A=>Next_Instruction,
     memory_select=>memory_select
     );
@@ -205,7 +202,7 @@ Program_Counter:ProgramCounter
     
 Reg_Bank_0 :Reg_Bank
     port map(
-    Clk=>clk_temp2,
+    Clk=>clk_temp,
     Reg_EN=>Reg_EN,
     Reset=>pushButton_temp,
     Reg_Bank_In=>Reg_Bank_In,
@@ -306,17 +303,19 @@ Slow_Clk_0 :Slow_Clk
         Clk_in=>Clk,
         Clk_out=>clk_temp2
         );
-LUT_16_7_0 : LUT_16_7
-       port map(
-                data=>LUT_ADDRESS,
-                address=>R7
-         );
+
     clk_temp <= Clk;
+    nextInsVal <= Next_Instruction;
     pushButton_temp <= pushButton;
     LED<=R7;
+    LED_R6 <= R6;
+    LED_R5 <= R5;
     LED_OVERFLOW<=OVERFLOW;
     LED_ZERO<=ZERO;
-    seven_seg_out<=LUT_ADDRESS;
-    an <= "1110";
+    RegisterEnable<=Reg_EN;
+    RegisterBank_DataIn<=Reg_Bank_In;
+    Imm_Value<=Immediatevalue_temp;
+    Instruction_temp <= Instruction;
+
 end Behavioral;
 

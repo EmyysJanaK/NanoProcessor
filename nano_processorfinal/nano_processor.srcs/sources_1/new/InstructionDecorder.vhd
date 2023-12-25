@@ -65,9 +65,7 @@ begin
     op <= Instruction(11 downto 10);
     reg_1_temp <= Instruction(9 downto 7);
     reg_2_temp <= Instruction(6 downto 4);
-    immediateValue_temp <= Instruction(3 downto 0);   
-    
-    regChkForJump<= RCJ;
+    immediateValue_temp <= Instruction(3 downto 0);    
     process (op, reg_1_temp, reg_2_temp, immediateValue_temp) 
     
     begin
@@ -93,11 +91,10 @@ begin
         elsif op = "11" then
             reg_select_temp_1<=reg_1_temp;
             jumpAddress<=immediateValue_temp(2 downto 0);
-            regEn_temp<="UUU";
             if regChkForJump= "0000" then
-                jumpSel<='0';
-            else   
                 jumpSel<='1';
+            else   
+                jumpSel<='0';
             end if;   
         end if;
     end process;
